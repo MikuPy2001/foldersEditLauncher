@@ -1,0 +1,11 @@
+﻿D:\pythonObj\SongHash\Beat Saber
+http://myres.mikupy2001.cn/beatstar/bssb/v2-all.json
+
+----以下内容无效
+文件必须是UTF-8
+%Beat Saber DIR%\UserData\SongCore\folders.xml
+
+源地址,最实时,缺点是部分地区访问不太通畅
+https://cdn.wes.cloud/beatstar/bssb/v2-all.json
+国内镜像,通常1小时内更新,随时可能失效
+http://myres.mikupy2001.cn/beatstar/bssb/v2-all.json
