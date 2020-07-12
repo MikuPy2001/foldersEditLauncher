@@ -18,6 +18,7 @@ class printTimer():
         return self
 
     def __exit__(self, type, value, trace):
+        self.__print__()
         print()
         self.close = True
 

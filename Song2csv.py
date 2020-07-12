@@ -7,6 +7,7 @@ from os import path
 from xml.dom.minidom import parse
 
 import urltools
+from printTimer import printTimer
 
 songkv = {
     "foldername": "目录名称",
@@ -34,7 +35,7 @@ def getSongInfo(loc):
     if not path.exists(infofile):
         return False
 
-    with open(infofile, 'r') as f:
+    with open(infofile, 'r', 'utf-8') as f:
         info = json.load(f)
     diffiles = []
     mapsset = info['_difficultyBeatmapSets']
@@ -54,12 +55,12 @@ def getSongInfo(loc):
 
     # print(path.basename(loc), hashcode, diffiles)
     name = info['_songName']+' - '+info['_songAuthorName'] + \
-        '('+info['_levelAuthorName']+')'
+        '['+info['_levelAuthorName']+']'
     return {"name": name,  "hash": hashcode.upper(), "info": info
             }
 
 
-def getDirSongHash(dir):
+def getDirSongHash(dir, pt):
     # 获取目录下所有歌曲的sha1,不包括子目录歌曲
     list = os.listdir(dir)
     songs = []
@@ -68,6 +69,7 @@ def getDirSongHash(dir):
         if path.isdir(songdir):
             res = getSongInfo(songdir)
             if(res != False):
+                pt.update(1)
                 songs.append(res)
                 res['songdirname'] = name
     return songs
@@ -78,8 +80,7 @@ def getDirs(dir):
     # 获取Beat Saber目录
     # TODO 检查是否为游戏目录
     foldersfile = path.join(dir, 'UserData', 'SongCore', 'folders.xml')
-    res = [{"name": "默认目录",
-            "loc": path.join(dir, 'Beat Saber_Data', 'CustomLevels')}]
+    res = {'默认目录': path.join(dir, 'Beat Saber_Data', 'CustomLevels')}
     if not path.isfile(foldersfile):  # 没有自定义目录
         return res
     folders = parse(foldersfile).documentElement.getElementsByTagName("folder")
@@ -87,9 +88,7 @@ def getDirs(dir):
         # TODO 跳过样例目录
         Name = folder.getElementsByTagName('Name')[0].firstChild.data
         Path = folder.getElementsByTagName('Path')[0].firstChild.data
-
-        res.append({"name": Name,
-                    "loc": Path})
+        res[Name] = Path
     return res
 
 
@@ -113,27 +112,31 @@ def getPPJson(url):
 def main(gamedir, ppurl):
     # 加载本地歌曲信息
     dirs = getDirs(gamedir)
-    print(f"已加载{len(dirs)}个目录")
+    print(f"已加载{len(dirs.keys())}个目录")
     songs = []
-    for dir in dirs:
-        for song in getDirSongHash(dir['loc']):
-            song['foldername'] = dir['name']
-            song['folderloc'] = dir['loc']
-            songs.append(song)
+    with printTimer("已加载 {} 首歌曲,平均速度为: {avg:.2f} 首每秒", True) as pt:
+        for name, loc in dirs.items():
+            for song in getDirSongHash(loc, pt):
+                song['foldername'] = name
+                song['folderloc'] = loc
+                songs.append(song)
     print(f"已加载{len(songs)}首歌曲")
     # 获取PP信息
-    ppjson=getPPJson(ppurl)
+    ppjson = getPPJson(ppurl)
     for song in songs:
-        diffs=ppjson[song['hash']]['diffs']  # json里的diff
+        hash = song['hash']
+        if hash not in ppjson:
+            continue
+        diffs = ppjson[hash]['diffs']  # json里的diff
         for diff in diffs:
             # print(diff,diffs)
-            if not diff['type'] == 1:  # 只统计最基础的模式
+            if diff['type'] != 1:  # 只统计最基础的模式
                 continue
-            song['pp-'+diff['diff']]=diff['pp']
-            song['star-'+diff['diff']]=diff['star']
+            song['pp-'+diff['diff']] = diff['pp']
+            song['star-'+diff['diff']] = diff['star']
     # 生成csv
     print("正在生成csv")
-    csvobj=csv.obj2csv()
+    csvobj = csv.obj2csv()
     csvobj.setDisplayTitleMap(songkv)
     for song in songs:
         song.pop("info")
@@ -143,15 +146,19 @@ def main(gamedir, ppurl):
     return csvobj.tostring()
 
 
-if __name__ == "__main__":
-    with open(path.join(os.getcwd(), "目录.txt"), 'r', 'utf-8') as f:
+def loadConfig():
+    with open(path.join(os.getcwd(), "config.txt"), 'r', 'utf-8') as f:
         dir = f.readline().encode('utf-8').decode('utf-8-sig')
         dir = dir.replace("\r", "").replace("\n", "")
         ppurl = f.readline().replace("\r", "").replace("\n", "")
-    dir = path.join(os.getcwd(), "Beat Saber")
+    # dir = path.join(os.getcwd(), "Beat Saber")
+    return dir, ppurl
+
+
+if __name__ == "__main__":
+    dir, ppurl = loadConfig()
 
     csv = main(dir, ppurl)
 
-    with open(path.join(os.getcwd(), "歌曲.csv"), 'w', 'gbk') as f:
+    with open(path.join(os.getcwd(), "songs.csv"), 'w', 'gb18030') as f:
         f.write(csv)
-        

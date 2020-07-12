@@ -1,4 +1,4 @@
-﻿D:\pythonObj\SongHash\Beat Saber
+﻿F:\MyGame\SteamGame\steamapps\common\Beat Saber
 http://myres.mikupy2001.cn/beatstar/bssb/v2-all.json
 
 ----以下内容无效
