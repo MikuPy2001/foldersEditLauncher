@@ -5,11 +5,28 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Python: 当前文件",
+            "name": "调试:文件夹管理界面",
             "type": "python",
             "request": "launch",
-            "program": "${file}",
-            "console": "integratedTerminal"
+            "program": "${workspaceRoot}/foldersEditLauncher.py",
+            "console": "integratedTerminal",
+            "preLaunchTask": "编译UI文件"
+        },
+        {
+            "name": "调试:CSV生成工具",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceRoot}/Song2csv.py",
+            "console": "integratedTerminal",
+            "preLaunchTask": "编译UI文件"
+        },
+        {
+            "name": "调试:CSV执行工具",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceRoot}/songCsvExe.py",
+            "console": "integratedTerminal",
+            "preLaunchTask": "编译UI文件"
         }
     ]
 }

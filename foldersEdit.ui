@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>544</width>
+    <width>542</width>
     <height>672</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <widget class="MyQListWidget" name="listWidget3">
+  <widget class="MyQListWidget" name="listWidget2">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -41,7 +41,7 @@
     <enum>QAbstractItemView::ExtendedSelection</enum>
    </property>
   </widget>
-  <widget class="MyQListWidget" name="listWidget2">
+  <widget class="MyQListWidget" name="listWidget1">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -69,7 +69,7 @@
     <enum>QAbstractItemView::ExtendedSelection</enum>
    </property>
   </widget>
-  <widget class="MyQListWidget" name="listWidget1">
+  <widget class="MyQListWidget" name="listWidget0">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -149,7 +149,7 @@
     <string>将文件夹拖入即可添加</string>
    </property>
   </widget>
-  <widget class="MyQListWidget" name="listWidget4">
+  <widget class="MyQListWidget" name="listWidgetDel">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -194,7 +194,7 @@
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>30</y>
+     <y>170</y>
      <width>200</width>
      <height>200</height>
     </rect>
@@ -205,28 +205,21 @@
    <property name="styleSheet">
     <string notr="true">border:1px solid red;</string>
    </property>
+   <property name="text">
+    <string>拖入图片即可更换封面</string>
+   </property>
    <property name="scaledContents">
     <bool>true</bool>
    </property>
-  </widget>
-  <widget class="QLabel" name="no_uss_label_6">
-   <property name="geometry">
-    <rect>
-     <x>330</x>
-     <y>10</y>
-     <width>201</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>拖入图片即可更换封面</string>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
    </property>
   </widget>
   <widget class="QLabel" name="no_uss_label_7">
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>270</y>
+     <y>10</y>
      <width>201</width>
      <height>16</height>
     </rect>
@@ -252,33 +245,20 @@
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>380</y>
+     <y>150</y>
      <width>191</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>此文件夹曲目仅能练习模式启动</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="savesong">
-   <property name="geometry">
-    <rect>
-     <x>330</x>
-     <y>410</y>
-     <width>201</width>
-     <height>41</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>保存曲目修改</string>
+    <string>设为练习专用歌包</string>
    </property>
   </widget>
   <widget class="QPushButton" name="savefile">
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>460</y>
+     <y>450</y>
      <width>201</width>
      <height>41</height>
     </rect>
@@ -291,7 +271,7 @@
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>290</y>
+     <y>30</y>
      <width>201</width>
      <height>81</height>
     </rect>
@@ -310,27 +290,17 @@
     <string>回收站的条目将不会被保存</string>
    </property>
   </widget>
-  <widget class="QLabel" name="no_uss_label_10">
+  <widget class="QLabel" name="no_uss_label_6">
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>230</y>
+     <y>130</y>
      <width>201</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>文件夹名称(双击编辑)</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="lineEdit">
-   <property name="geometry">
-    <rect>
-     <x>330</x>
-     <y>250</y>
-     <width>201</width>
-     <height>20</height>
-    </rect>
+    <string>以下设置仅限自定义歌包有效</string>
    </property>
   </widget>
  </widget>
@@ -338,12 +308,12 @@
   <customwidget>
    <class>MyQListWidget</class>
    <extends>QListWidget</extends>
-   <header>歌曲文件夹配套控件</header>
+   <header>foldersEditControls</header>
   </customwidget>
   <customwidget>
    <class>MyQLabel</class>
    <extends>QLabel</extends>
-   <header>歌曲文件夹配套控件</header>
+   <header>foldersEditControls</header>
   </customwidget>
  </customwidgets>
  <resources/>

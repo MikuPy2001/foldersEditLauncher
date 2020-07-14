@@ -1,10 +1,11 @@
 <!--  
 	<folder>		
-		<Name>	    [符合xml        定义的字符串]如果Pack为0,1 为游戏内子文件夹名称 如果Pack为2 为包名  </Name>
-		<Path>	    [合法文件夹路径]要使用的文件夹的完整路径.                                           </Path>
-		<Pack>	    [0,1,2]         0-将歌曲放入主自定义级别包中,1-将其放入wip级别包中,2-将其放入新包中 </Pack>
-		<ImagePath>	[合法图片路径]  如果Pack为2，将尝试加载该图像以用作包装封面。                       </ImagePath>
-		<WIP>	    [True,False]    如果Pack为2，设为WIP歌曲，只能练习play。                            </WIP>
+		<Name>      [字符串]      如果Pack为0,1 为游戏内子文件夹名称 如果Pack为2 为包名             </Name>
+		<Pack>	    [0,1,2]      0-将歌曲放入主自定义级别包中,1-将其放入wip级别包中,2-将其放入新包中 </Pack>
+    
+		<Path>	    [文件夹路径]  要使用的文件夹的完整路径.                                        </Path>
+		<ImagePath>	[图片路径]    如果Pack为2，将尝试加载该图像以用作包装封面。                      </ImagePath>
+		<WIP>	      [True,False] 如果Pack为2，设为WIP歌曲，只能练习play。                          </WIP>
 	</folder>		
 
 		
