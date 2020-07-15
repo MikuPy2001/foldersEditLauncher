@@ -25,6 +25,7 @@ class 窗口事件处理(QtWidgets.QWidget):
         self.initUI()
         # self.无用代码()
         self.loadxml()
+        self.nowitem = None
 
     def initUI(self):
         self.ui = Ui_Form()
@@ -40,7 +41,6 @@ class 窗口事件处理(QtWidgets.QWidget):
             QtCore.Qt.WindowCloseButtonHint)
         # 禁止拉伸窗口大小
         self.setFixedSize(self.width(), self.height())
-
         # 关联点击事件,单击即可开始编辑
         self.ui.listWidget0.itemClicked.connect(self.listItemClickedEVE)
         self.ui.listWidget1.itemClicked.connect(self.listItemClickedEVE)
@@ -51,16 +51,21 @@ class 窗口事件处理(QtWidgets.QWidget):
         self.show()
 
     def listItemClickedEVE(self, item):
-        # TODO
-        if isinstance(item, foldersEditControls.MyQListWidgetItem):
-            print(("被单击", type(item), item.text(),
-                   item.WIP, item.Path, item.ImagePath))
-        else:
-            print(("被单击", type(item), item.text()))
+        if not self.nowitem is None:
+            self.nowitem.Path = self.ui.Path.toPlainText()
+            self.nowitem.ImagePath = self.ui.ImagePath.imgloc
+            self.nowitem.WIP = self.ui.WIP.isChecked()
+        self.nowitem = item
+        self.ui.Path.setPlainText(item.Path)
+        self.ui.ImagePath.imgloc = item.ImagePath
+        self.ui.WIP.setChecked(item.WIP)
+        self.ui.ImagePath.refreshImg()
 
     def loadxml(self):
-        foldersfile = path.join(os.getcwd(), 'Beat Saber', 'UserData',
-                                'SongCore', 'folders (2).xml')
+        # foldersfile = path.join(os.getcwd(), 'Beat Saber', 'UserData',
+        #                         'SongCore', 'folders (2).xml')
+        foldersfile = path.join(os.getcwd(),  'UserData',
+                                'SongCore', 'folders.xml')
         if not path.isfile(foldersfile):  # 没有自定义目录
             return
         folders = parse(

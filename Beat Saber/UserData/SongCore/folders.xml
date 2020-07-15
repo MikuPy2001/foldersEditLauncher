@@ -1,7 +1,12 @@
 <folders>
-  <folder>
-    <Name>自定义</Name>
-    <Path>C:\Users\admin\Desktop\SongHash\Beat Saber\Beat Saber_Data\CustomLevels\自定义目录</Path>
-    <Pack>2</Pack>
-  </folder>
+	<folder>
+		<Name>自定义</Name>
+		<Path>C:\Users\admin\Desktop\SongHash\Beat Saber\Beat Saber_Data\CustomLevels\自定义目录</Path>
+		<Pack>2</Pack>
+	</folder>
+	<folder>
+		<Name>fgsakjdg</Name>
+		<Path>C:\Users\admin\Desktop\py\SongHash\Beat Saber\UserData</Path>
+		<Pack>2</Pack>
+	</folder>
 </folders>

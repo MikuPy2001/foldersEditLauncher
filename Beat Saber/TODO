@@ -1,0 +1,13 @@
+要优先保证的:
+保存还没写
+自动查找steam目录 https://stackoverflow.com/questions/34090258/find-steam-games-folder
+支持手动输入steam目录
+保存目录地址
+
+优化体验的:
+目录变更改成手动拖
+如果拖入的目录是歌曲,则添加上一层目录
+防止重复添加
+
+不重要的:
+判断本体是否是exe,如果是exe,则从exe拿到图标

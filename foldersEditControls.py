@@ -7,7 +7,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 
 def getItem(Name, Path, ImagePath, WIP):
-    item = QtWidgets.QListWidgetIte()
+    item = QtWidgets.QListWidgetItem()
     item.setText(Name)
     item.Path = Path
     item.ImagePath = ImagePath
@@ -88,7 +88,13 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件拖入
 
     def dragEnterEvent(self, e):  # 进入
         super().dragEnterEvent(e)
-        path = e.mimeData().text().replace('file:///', '')
+        m = e.mimeData()
+
+        if not (m.hasText() and m.text().startswith('file:///')):
+            # print("不受支持的类型")
+            return
+
+        path = m.text().replace('file:///', '')
         paths = path.splitlines()
         for path in paths:
             if os.path.isdir(path):
@@ -117,10 +123,13 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件拖入
         for path in paths:
             if os.path.isdir(path):
                 print(path)
+                basename = os.path.basename(path)
+                item = getItem(basename, path, "", False)
+                self.addItem(item)
 
 
-class MyQLabel(QtWidgets.QLabel):
-    imgType_list = ['jpg', 'bmp', 'png', 'jpeg', 'rgb', 'tif']
+class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
+    # imgType_list = ['jpg', 'bmp', 'png', 'jpeg', 'rgb', 'tif']
 
     def __init__(self, Form):
         super().__init__(Form)
@@ -128,26 +137,34 @@ class MyQLabel(QtWidgets.QLabel):
 
     def dragEnterEvent(self, e):  # 进入
         super().dragEnterEvent(e)
+        m = e.mimeData()
         # TODO 检查拖放类型
-        path = e.mimeData().text().replace('file:///', '')
-        paths = path.splitlines()
-        if len(paths) > 1:
-            print("不支持多文件")
+        if not (m.hasText() and m.text().startswith('file:///')):
+            # print("不受支持的类型")
             return
+
+        path = m.text().replace('file:///', '')
+        if len(path.splitlines()) > 1:
+            # print("不支持多文件")
+            return
+        if not os.path.isfile(path):
+            # print("不是文件")
+            return
+
         imgType = imghdr.what(path)
-        if imgType in self.imgType_list:  # 受支持的格式
-            self.isDragEnter = True
-            # self.pixmapbak = self.pixmap
-            # print(self.pixmapbak)
-            # self.setText("松开鼠标以设置封面")
-            e.acceptProposedAction()
-        else:
-            print("格式不受支持:"+imgType)
+        if imgType is None:  # 受支持的格式
+            print(("格式不受支持:", imgType))
+            return
+
+        e.acceptProposedAction()
+        self.isDragEnter = True
+        self.setText("松开鼠标以设置封面")
 
     def dragLeaveEvent(self, e):  # 离开
         super().dragLeaveEvent(e)
         if self.isDragEnter:
             self.isDragEnter = False
+        self.refreshImg()
 
     def dragMoveEvent(self, e):  # 移动
         super().dragMoveEvent(e)
@@ -160,11 +177,19 @@ class MyQLabel(QtWidgets.QLabel):
             return
         self.isDragEnter = False
         path = e.mimeData().text().replace('file:///', '')  # 删除多余开头
-
         self.imgloc = path
+        self.refreshImg()
 
     def refreshImg(self):
+        if self.imgloc == '':
+            self.setText("拖入图片即可更换封面")
+            return
+        if not os.path.isfile(self.imgloc):
+            self.setText("封面文件无效")
+            return
         imgType = imghdr.what(self.imgloc)
-        if imgType in self.imgType_list:  # 受支持的格式
-            pix = QtGui.QPixmap(self.imgloc)
-            self.setPixmap(pix)
+        if imgType is None:  # 受支持的格式
+            self.setText("封面无法解析")
+            return
+        pix = QtGui.QPixmap(self.imgloc)
+        self.setPixmap(pix)

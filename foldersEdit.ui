@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>歌包管理 - 最可爱的塔塔喵出品</string>
   </property>
   <widget class="MyQListWidget" name="listWidget2">
    <property name="geometry">
@@ -190,11 +190,11 @@
     <string>回收站</string>
    </property>
   </widget>
-  <widget class="MyQLabel" name="img">
+  <widget class="MyQLabel" name="ImagePath">
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>170</y>
+     <y>230</y>
      <width>200</width>
      <height>200</height>
     </rect>
@@ -241,11 +241,11 @@
     <string>拖动排序以及归类</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="textsong">
+  <widget class="QCheckBox" name="WIP">
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>150</y>
+     <y>210</y>
      <width>191</width>
      <height>16</height>
     </rect>
@@ -258,7 +258,7 @@
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>450</y>
+     <y>470</y>
      <width>201</width>
      <height>41</height>
     </rect>
@@ -267,13 +267,13 @@
     <string>保存文件</string>
    </property>
   </widget>
-  <widget class="QPlainTextEdit" name="fileloc">
+  <widget class="QPlainTextEdit" name="Path">
    <property name="geometry">
     <rect>
      <x>330</x>
      <y>30</y>
      <width>201</width>
-     <height>81</height>
+     <height>131</height>
     </rect>
    </property>
   </widget>
@@ -294,13 +294,52 @@
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>130</y>
+     <y>190</y>
      <width>201</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
     <string>以下设置仅限自定义歌包有效</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="no_uss_label_10">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>600</y>
+     <width>201</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>如果打开后没有目录,请检查</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="no_uss_label_11">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>620</y>
+     <width>201</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>1.是否放在游戏文件夹</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="no_uss_label_12">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>640</y>
+     <width>201</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>2.是否安装songCore插件</string>
    </property>
   </widget>
  </widget>
