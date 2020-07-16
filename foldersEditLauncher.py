@@ -1,16 +1,16 @@
-from codecs import open
 import ctypes
+import os
 import sys
+from codecs import open
+from os import path
+from xml.dom import minidom
+from xml.dom.minidom import Document, parse, parseString
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-from foldersEdit import Ui_Form
 import foldersEditControls
+from foldersEdit import Ui_Form
 
-import os
-from os import path
-from xml.dom.minidom import parse, Document, parseString
-from xml.dom import minidom
 
 
 def getNodeData(doc, TagName, default=""):
