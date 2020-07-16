@@ -1,3 +1,4 @@
+from codecs import open
 import ctypes
 import sys
 
@@ -8,24 +9,54 @@ import foldersEditControls
 
 import os
 from os import path
-from xml.dom.minidom import parse
+from xml.dom.minidom import parse, Document, parseString
+from xml.dom import minidom
 
 
-def getNodeData(xml, TagName, default=""):
-    Nodes = xml.getElementsByTagName(TagName)
-    if len(Nodes) > 0:
-        return Nodes[0].firstChild.data
-    else:
+def getNodeData(doc, TagName, default=""):
+    Nodes = doc.getElementsByTagName(TagName)
+    if len(Nodes) == 0:
         return default
+    node = Nodes[0].firstChild
+    if node is None:
+        return default
+    return node.data
+
+
+def setNodeText(doc, fatherNode, nodeName, nodeText):
+    node = doc.createElement(nodeName)
+    node.appendChild(
+        doc.createTextNode(
+            str(
+                nodeText
+            )
+        )
+    )
+    fatherNode.appendChild(node)
+
+
+def setNodeData(doc, fatherNode, list, pack):
+    for i in range(list.count()):
+        item = list.item(i)
+        folder = doc.createElement("folder")
+
+        setNodeText(doc, folder, "Name", item.text())
+        setNodeText(doc, folder, "Path", item.Path)
+        setNodeText(doc, folder, "ImagePath", item.ImagePath)
+        setNodeText(doc, folder, "WIP", item.WIP)
+        setNodeText(doc, folder, "Pack", pack)
+
+        fatherNode.appendChild(folder)
 
 
 class 窗口事件处理(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        self.nowitem = None
         self.initUI()
         # self.无用代码()
+        self.setXmlLoc()
         self.loadxml()
-        self.nowitem = None
 
     def initUI(self):
         self.ui = Ui_Form()
@@ -47,6 +78,7 @@ class 窗口事件处理(QtWidgets.QWidget):
         self.ui.listWidget2.itemClicked.connect(self.listItemClickedEVE)
         self.ui.listWidgetDel.itemClicked.connect(self.listItemClickedEVE)
         self.nowitem = None
+        self.ui.savefile.clicked.connect(self.savexml)
 
         self.show()
 
@@ -61,16 +93,35 @@ class 窗口事件处理(QtWidgets.QWidget):
         self.ui.WIP.setChecked(item.WIP)
         self.ui.ImagePath.refreshImg()
 
+    def setXmlLoc(self):
+        self.xmlLoc = path.join(
+            os.getcwd(),
+            'Beat Saber',
+            'UserData', 'SongCore', 'folders.xml')
+
+    def savexml(self):
+        doc = Document()
+        folders = doc.createElement("folders")
+        doc.appendChild(folders)
+        setNodeData(doc, folders, self.ui.listWidget0, 0)
+        setNodeData(doc, folders, self.ui.listWidget1, 1)
+        setNodeData(doc, folders, self.ui.listWidget2, 2)
+        with open(self.xmlLoc, 'w', encoding="utf-8") as f:
+            f.write(doc.toprettyxml())
+
     def loadxml(self):
-        # foldersfile = path.join(os.getcwd(), 'Beat Saber', 'UserData',
-        #                         'SongCore', 'folders (2).xml')
-        foldersfile = path.join(os.getcwd(),  'UserData',
-                                'SongCore', 'folders.xml')
-        if not path.isfile(foldersfile):  # 没有自定义目录
+        # 从xml初始化列表
+        if not path.isfile(self.xmlLoc):  # 没有自定义目录
             return
-        folders = parse(
-            foldersfile).documentElement.getElementsByTagName("folder")
+        with open(self.xmlLoc, 'r', encoding="utf-8") as f:
+            folders = minidom.parseString(
+                f.read()).documentElement.getElementsByTagName("folder")
         print(("一共有", len(folders), "个目录被读取"))
+        self.ui.listWidget0.clear()
+        self.ui.listWidget1.clear()
+        self.ui.listWidget2.clear()
+        self.ui.listWidgetDel.clear()
+
         for folder in folders:
             item = foldersEditControls.getItem(
                 getNodeData(folder, 'Name'),

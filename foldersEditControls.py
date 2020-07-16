@@ -55,16 +55,6 @@ class MyQListWidget1(QtWidgets.QListWidget):  # 解决item拖放问题
 
         return True
 
-    # def dragEnterEvent(self, e):  # 进入
-    #     super().dragEnterEvent(e)
-    #     if e.mimeData().hasFormat(self.dropFormat):
-    #         e.acceptProposedAction()
-
-    # def dragMoveEvent(self, e):  # 移动
-    #     super().dragMoveEvent(e)
-    #     if e.mimeData().hasFormat(self.dropFormat):
-    #         e.acceptProposedAction()
-
 
 class MyQListWidget2(MyQListWidget1):  # 双击编辑item
     def __init__(self, Form):
