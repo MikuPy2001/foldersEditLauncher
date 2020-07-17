@@ -194,7 +194,7 @@
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>230</y>
+     <y>240</y>
      <width>200</width>
      <height>200</height>
     </rect>
@@ -245,7 +245,7 @@
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>210</y>
+     <y>220</y>
      <width>191</width>
      <height>16</height>
     </rect>
@@ -267,7 +267,7 @@
     <string>保存文件</string>
    </property>
   </widget>
-  <widget class="QPlainTextEdit" name="Path">
+  <widget class="QTextEdit" name="Path">
    <property name="geometry">
     <rect>
      <x>330</x>
@@ -294,7 +294,7 @@
    <property name="geometry">
     <rect>
      <x>330</x>
-     <y>190</y>
+     <y>200</y>
      <width>201</width>
      <height>16</height>
     </rect>
@@ -313,7 +313,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>如果打开后没有目录,请检查</string>
+    <string>双击即可修改名称</string>
    </property>
   </widget>
   <widget class="QLabel" name="no_uss_label_11">
@@ -326,7 +326,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>1.是否放在游戏文件夹</string>
+    <string>-</string>
    </property>
   </widget>
   <widget class="QLabel" name="no_uss_label_12">
@@ -339,7 +339,33 @@
     </rect>
    </property>
    <property name="text">
-    <string>2.是否安装songCore插件</string>
+    <string>-</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="no_uss_label_13">
+   <property name="geometry">
+    <rect>
+     <x>330</x>
+     <y>170</y>
+     <width>131</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>本目录含有歌曲数量为:</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="songlen">
+   <property name="geometry">
+    <rect>
+     <x>460</x>
+     <y>170</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>0</string>
    </property>
   </widget>
  </widget>
