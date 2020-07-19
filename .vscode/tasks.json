@@ -6,7 +6,9 @@
         {
             "label": "编译UI文件",
             "type": "shell",
-            "command": "pyuic5 foldersEdit.ui>foldersEdit.py",
+            "windows": {
+                "command": "${workspaceFolder}\\build.bat",
+            },
             "problemMatcher": [],
             "group": {
                 "kind": "build",

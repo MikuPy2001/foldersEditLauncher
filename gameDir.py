@@ -69,7 +69,8 @@ def loadFile():
     if os.path.isfile(gameFolder):
         with open(gameFolder, 'r', "UTF-8") as f:
             gameDir = f.read()
-            if os.path.isfile(gameDir):
+            gameexe = os.path.join(gameDir, "Beat Saber.exe")
+            if os.path.isfile(gameexe):
                 return gameDir
 
 
@@ -90,11 +91,13 @@ def getBeatSaberDir():
             # 从steam 检测游戏目录
             dir = findGameInSteam("Beat Saber")
             if dir is None:
-                # 直接让用户手选
-                dir = getDirByUer()
-                if dir is None:
-                    # 没救了,再见
-                    return
+            print("未能从steam库目录检测到游戏目录")
+            # 直接让用户手选
+            dir = getDirByUer()
+            if dir is None:
+                print("用户取消了目录选择")
+                # 没救了,再见
+                return
     saveFile(dir)
     return dir
 

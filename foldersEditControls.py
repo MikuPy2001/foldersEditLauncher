@@ -1,8 +1,9 @@
+import imghdr
+import json
+import os
 import traceback
 import types
-import imghdr
-import os
-import json
+
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
@@ -13,12 +14,6 @@ def getItem(Name, Path, ImagePath, WIP):
     item.ImagePath = ImagePath
     item.WIP = WIP
     return item
-
-
-# class MyQListWidgetItem(QtWidgets.QListWidgetItem):
-#     def __init__(self):
-#         super().__init__()
-#         print("项目初始化")
 
 
 class MyQListWidget1(QtWidgets.QListWidget):  # 解决item拖放问题
@@ -112,10 +107,16 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件拖入
         print("收到以下文件夹")
         for path in paths:
             if os.path.isdir(path):
-                print(path)
-                basename = os.path.basename(path)
-                item = getItem(basename, path, "", False)
+                # 如果拖入的是歌曲,则返回上一层的
+                if os.path.isfile(os.path.join(path, "info.dat")) or os.path.isfile(os.path.join(path, "info.json")):
+                    path = os.path.dirname(path)
+                
+                item = getItem(os.path.basename(path), path, "", False)
                 self.addItem(item)
+    def setCheckDuplicate(self,callBack):
+        self.callBack=callBack
+    def CheckDuplicate(self):
+        return False
 
 
 class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示

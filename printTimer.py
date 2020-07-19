@@ -1,6 +1,6 @@
 import random
-from threading import Timer
 import time
+from threading import Timer
 
 
 class printTimer():

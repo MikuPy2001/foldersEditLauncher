@@ -1,3 +1,4 @@
+import gameDir
 import ctypes
 import os
 import sys
@@ -10,7 +11,6 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 
 import foldersEditControls
 from foldersEdit import Ui_Form
-
 
 
 def getNodeData(doc, TagName, default=""):
@@ -50,13 +50,13 @@ def setNodeData(doc, fatherNode, list, pack):
 
 
 class 窗口事件处理(QtWidgets.QWidget):
-    def __init__(self):
+    def __init__(self, gamebasedir=""):
         super().__init__()
         self.nowitem = None
         self.initUI()
         # self.无用代码()
-        self.setXmlLoc()
-        self.loadxml()
+        gamebasedir=os.path.join(gamebasedir, "UserData", "SongCore", "folders.xml")
+        self.setXmlLoc(gamebasedir)
 
     def initUI(self):
         self.ui = Ui_Form()
@@ -93,21 +93,9 @@ class 窗口事件处理(QtWidgets.QWidget):
         self.ui.WIP.setChecked(item.WIP)
         self.ui.ImagePath.refreshImg()
 
-    def setXmlLoc(self):
-        self.xmlLoc = path.join(
-            os.getcwd(),
-            'Beat Saber',
-            'UserData', 'SongCore', 'folders.xml')
-
-    def savexml(self):
-        doc = Document()
-        folders = doc.createElement("folders")
-        doc.appendChild(folders)
-        setNodeData(doc, folders, self.ui.listWidget0, 0)
-        setNodeData(doc, folders, self.ui.listWidget1, 1)
-        setNodeData(doc, folders, self.ui.listWidget2, 2)
-        with open(self.xmlLoc, 'w', encoding="utf-8") as f:
-            f.write(doc.toprettyxml())
+    def setXmlLoc(self, loc):
+        self.xmlLoc = loc
+        self.loadxml()
 
     def loadxml(self):
         # 从xml初始化列表
@@ -139,6 +127,16 @@ class 窗口事件处理(QtWidgets.QWidget):
             else:
                 self.ui.listWidgetDel.addItem(item)
 
+    def savexml(self):
+        doc = Document()
+        folders = doc.createElement("folders")
+        doc.appendChild(folders)
+        setNodeData(doc, folders, self.ui.listWidget0, 0)
+        setNodeData(doc, folders, self.ui.listWidget1, 1)
+        setNodeData(doc, folders, self.ui.listWidget2, 2)
+        with open(self.xmlLoc, 'w', encoding="utf-8") as f:
+            f.write(doc.toprettyxml())
+
     def 无用代码(self):
         # 无用代码
         for i in range(10):
@@ -155,6 +153,11 @@ class 窗口事件处理(QtWidgets.QWidget):
 
 
 if __name__ == "__main__":
+    gamed = gameDir.getBeatSaberDir()
+    if gamed == None:
+        sys.exit()
+    print(f"游戏目录为:{gamed}")
+
     app = QtWidgets.QApplication(sys.argv)
-    widget = 窗口事件处理()  # 窗口事件处理 使用UI生成的,不要改
+    widget = 窗口事件处理(gamed)  # 窗口事件处理 使用UI生成的,不要改
     sys.exit(app.exec_())

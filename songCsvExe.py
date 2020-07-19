@@ -1,10 +1,9 @@
-
-from codecs import open
-import os
 import csv
-import Song2csv
+import os
 import sys
+from codecs import open
 
+import Song2csv
 
 if __name__ == "__main__":
     songscsv = os.path.join(os.getcwd(), "songs.csv")
