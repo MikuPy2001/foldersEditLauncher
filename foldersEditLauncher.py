@@ -1,4 +1,3 @@
-import gameDir
 import ctypes
 import os
 import sys
@@ -10,10 +9,12 @@ from xml.dom.minidom import Document, parse, parseString
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 import foldersEditControls
+import gameDir
 from foldersEdit import Ui_Form
 
 
 def getNodeData(doc, TagName, default=""):
+    # 从xml子节点拿到特定tag的文本数据
     Nodes = doc.getElementsByTagName(TagName)
     if len(Nodes) == 0:
         return default
@@ -24,6 +25,7 @@ def getNodeData(doc, TagName, default=""):
 
 
 def setNodeText(doc, fatherNode, nodeName, nodeText):
+    # 为指定子节点设置一个文本节点
     node = doc.createElement(nodeName)
     node.appendChild(
         doc.createTextNode(
@@ -36,6 +38,7 @@ def setNodeText(doc, fatherNode, nodeName, nodeText):
 
 
 def setNodeData(doc, fatherNode, list, pack):
+    # 将列表数据添加到xml里
     for i in range(list.count()):
         item = list.item(i)
         folder = doc.createElement("folder")
@@ -50,13 +53,11 @@ def setNodeData(doc, fatherNode, list, pack):
 
 
 class 窗口事件处理(QtWidgets.QWidget):
-    def __init__(self, gamebasedir=""):
+    def __init__(self, gamebasedir=None):
         super().__init__()
         self.nowitem = None
         self.initUI()
-        # self.无用代码()
-        gamebasedir=os.path.join(gamebasedir, "UserData", "SongCore", "folders.xml")
-        self.setXmlLoc(gamebasedir)
+        self.setGameLoc(gamebasedir)
 
     def initUI(self):
         self.ui = Ui_Form()
@@ -93,7 +94,20 @@ class 窗口事件处理(QtWidgets.QWidget):
         self.ui.WIP.setChecked(item.WIP)
         self.ui.ImagePath.refreshImg()
 
-    def setXmlLoc(self, loc):
+    def setGameLoc(self, loc):
+        if loc is None or not os.path.isdir(loc):
+            loc = QtWidgets.QFileDialog.getOpenFileName(
+                self, '请选定游戏主文件',  # 标题
+                os.getcwd(),  # 起始目录
+                "游戏主文件(*Saber.exe)",  # 过滤器
+            )
+            if loc[0] == '':
+                sys.exit(0)
+                return
+            loc = loc[0]
+        print(loc)
+        loc = os.path.join(
+            loc, "UserData", "SongCore", "folders.xml")
         self.xmlLoc = loc
         self.loadxml()
 
@@ -128,6 +142,7 @@ class 窗口事件处理(QtWidgets.QWidget):
                 self.ui.listWidgetDel.addItem(item)
 
     def savexml(self):
+        # 列表保存到文件
         doc = Document()
         folders = doc.createElement("folders")
         doc.appendChild(folders)
@@ -137,27 +152,13 @@ class 窗口事件处理(QtWidgets.QWidget):
         with open(self.xmlLoc, 'w', encoding="utf-8") as f:
             f.write(doc.toprettyxml())
 
-    def 无用代码(self):
-        # 无用代码
-        for i in range(10):
-            item = QtWidgets.QListWidgetItem()
-            item.setText(f"默认-{i}")
-            self.ui.listWidget0.addItem(item)
-        for i in range(10):
-            item = QtWidgets.QListWidgetItem()
-            item.setText(f"自定义-{i}")
-            self.ui.listWidget2.addItem(item)
-
     def closeEvent(self, e):
         print("窗口被关闭了")
 
 
 if __name__ == "__main__":
     gamed = gameDir.getBeatSaberDir()
-    if gamed == None:
-        sys.exit()
-    print(f"游戏目录为:{gamed}")
-
     app = QtWidgets.QApplication(sys.argv)
     widget = 窗口事件处理(gamed)  # 窗口事件处理 使用UI生成的,不要改
     sys.exit(app.exec_())
+    print("程序结束了")

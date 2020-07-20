@@ -5,21 +5,43 @@ from codecs import open
 import win32con
 import win32ui
 
+import regRead
+
+
+def getOculusLibDirs():
+    Libraries = r"HKEY_CURRENT_USER\SOFTWARE\Oculus VR, LLC\Oculus\Libraries"
+    keys = regRead.regGetSubDirs(Libraries)
+    if keys is None:
+        return
+    libs = []
+    for key in keys:
+        k = os.path.join(Libraries, key, "OriginalPath")
+        res = regRead.regGetValue(k)
+        if not res is None:
+            if os.path.isdir(res):
+                libs.append(res)
+    return libs
+
+
+def findGameInOculus(gameDir):
+    res = getOculusLibDirs()
+    if res is None :
+        return
+    for dir in res:
+        gamebasedir = os.path.join(dir, "Software", gameDir)
+        if os.path.isdir(gamebasedir):
+            return gamebasedir
+
 
 def getSteamDir():
-    try:
-        steamreg = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r'SOFTWARE\WOW6432Node\Valve\Steam',
-                                  0, (winreg.KEY_WOW64_64KEY + winreg.KEY_READ))
-    except:
-        try:
-            steamreg = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, r'SOFTWARE\Valve\Steam',
-                                      0, (winreg.KEY_WOW64_64KEY + winreg.KEY_READ))
-        except:
-            return
-
-    _data, _type = winreg.QueryValueEx(steamreg, "InstallPath")
-    winreg.CloseKey(steamreg)
-    return _data
+    locs = [
+        r'HKEY_LOCAL_MACHINE\SOFTWARE\Wow6432Node\Valve\Steam\InstallPath',
+        r'HKEY_LOCAL_MACHINE\SOFTWARE\Valve\Steam\InstallPath'
+    ]
+    for loc in locs:
+        res = regRead.regGetValue(loc)
+        if not res is None:
+            return res
 
 
 def getSteamLibDirs():
@@ -46,6 +68,8 @@ def getSteamLibDirs():
 
 def findGameInSteam(gameDirName):
     dirs = getSteamLibDirs()
+    if dirs is None:
+        return
     for libdir in dirs:
         gamedir = os.path.join(libdir, gameDirName)
         if os.path.isdir(gamedir):
@@ -78,28 +102,33 @@ def saveFile(dir):
     gameFolder = os.path.join(os.getcwd(), "gameFolder")
     with open(gameFolder, 'w', "UTF-8") as f:
         f.write(dir)
+    return dir
+
+
+def isBeatSaberDir(dir):
+    if dir is None or dir == "":
+        return False
+    return os.path.isfile(os.path.join(dir, "Beat Saber.exe"))
 
 
 def getBeatSaberDir():
     # 从配置文件读
     dir = loadFile()
-    if dir is None:
-        # 检测上一层目录是否就是游戏目录
-        dir = os.path.dirname(os.getcwd())
-        game = os.path.join(dir, "Beat Saber.exe")
-        if not os.path.isfile(game):
-            # 从steam 检测游戏目录
-            dir = findGameInSteam("Beat Saber")
-            if dir is None:
-            print("未能从steam库目录检测到游戏目录")
-            # 直接让用户手选
-            dir = getDirByUer()
-            if dir is None:
-                print("用户取消了目录选择")
-                # 没救了,再见
-                return
-    saveFile(dir)
-    return dir
+    if isBeatSaberDir(dir):
+        return saveFile(dir)
+    # 检测上一层目录是否就是游戏目录
+    dir = os.path.dirname(os.getcwd())
+    if isBeatSaberDir(dir):
+        return saveFile(dir)
+    # 从 Steam 检测游戏目录
+    dir = findGameInSteam("Beat Saber")
+    if isBeatSaberDir(dir):
+        return saveFile(dir)
+    # 从 Oculus 检测游戏目录
+    dir = findGameInOculus("hyperbolic-magnetism-beat-saber")
+    if isBeatSaberDir(dir):
+        return saveFile(dir)
 
 
-# getBeatSaber()
+if __name__ == "__main__":
+    getBeatSaberDir()

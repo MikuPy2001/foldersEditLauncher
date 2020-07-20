@@ -1,16 +1,23 @@
 <?xml version="1.0" ?>
 <folders>
 	<folder>
-		<Name>123</Name>
-		<Path>C:\Users\admin\Desktop\py\SongHash\Beat Saber\UserData</Path>
+		<Name>WIP歌包</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/WIP歌包</Path>
 		<ImagePath></ImagePath>
 		<WIP>False</WIP>
-		<Pack>0</Pack>
+		<Pack>2</Pack>
 	</folder>
 	<folder>
-		<Name>自定义</Name>
-		<Path>C:\Users\admin\Desktop\SongHash\Beat Saber\Beat Saber_Data\CustomLevels\自定义目录</Path>
-		<ImagePath>C:/Users/admin/Desktop/py/SongHash/Examples.jpg</ImagePath>
+		<Name>示例歌包</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/示例歌包</Path>
+		<ImagePath></ImagePath>
+		<WIP>False</WIP>
+		<Pack>2</Pack>
+	</folder>
+	<folder>
+		<Name>有封面的歌包</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/有封面的歌包</Path>
+		<ImagePath></ImagePath>
 		<WIP>False</WIP>
 		<Pack>2</Pack>
 	</folder>
