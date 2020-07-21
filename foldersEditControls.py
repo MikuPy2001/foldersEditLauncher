@@ -13,6 +13,7 @@ def getItem(Name, Path, ImagePath, WIP):
     item.Path = Path
     item.ImagePath = ImagePath
     item.WIP = WIP
+    item.songlen = 0
     return item
 
 
@@ -172,7 +173,7 @@ class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
         self.refreshImg()
 
     def refreshImg(self):
-        if self.imgloc == '':
+        if self.imgloc==None or self.imgloc == '':
             self.setText("拖入图片即可更换封面")
             return
         if not os.path.isfile(self.imgloc):

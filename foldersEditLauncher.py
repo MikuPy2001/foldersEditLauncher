@@ -88,11 +88,20 @@ class 窗口事件处理(QtWidgets.QWidget):
             self.nowitem.Path = self.ui.Path.toPlainText()
             self.nowitem.ImagePath = self.ui.ImagePath.imgloc
             self.nowitem.WIP = self.ui.WIP.isChecked()
-        self.nowitem = item
-        self.ui.Path.setPlainText(item.Path)
-        self.ui.ImagePath.imgloc = item.ImagePath
-        self.ui.WIP.setChecked(item.WIP)
-        self.ui.ImagePath.refreshImg()
+        if item is None:
+            self.nowitem = None
+            self.ui.Path.setPlainText("请选择一个")
+            self.ui.ImagePath.imgloc = item.ImagePath
+            self.ui.WIP.setChecked(item.WIP)
+            self.ui.ImagePath.refreshImg()
+            self.ui.songlen.setText("0")
+        else:
+            self.nowitem = item
+            self.ui.Path.setPlainText(item.Path)
+            self.ui.ImagePath.imgloc = item.ImagePath
+            self.ui.WIP.setChecked(item.WIP)
+            self.ui.ImagePath.refreshImg()
+            self.ui.songlen.setText(item.songlen)
 
     def setGameLoc(self, loc):
         if loc is None or not os.path.isdir(loc):
@@ -104,7 +113,7 @@ class 窗口事件处理(QtWidgets.QWidget):
             if loc[0] == '':
                 sys.exit(0)
                 return
-            loc = loc[0]
+            loc = os.path.dirname(loc[0])
         print(loc)
         loc = os.path.join(
             loc, "UserData", "SongCore", "folders.xml")
