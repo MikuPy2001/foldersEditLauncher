@@ -111,11 +111,13 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件拖入
                 # 如果拖入的是歌曲,则返回上一层的
                 if os.path.isfile(os.path.join(path, "info.dat")) or os.path.isfile(os.path.join(path, "info.json")):
                     path = os.path.dirname(path)
-                
+
                 item = getItem(os.path.basename(path), path, "", False)
                 self.addItem(item)
-    def setCheckDuplicate(self,callBack):
-        self.callBack=callBack
+
+    def setCheckDuplicate(self, callBack):
+        self.callBack = callBack
+
     def CheckDuplicate(self):
         return False
 
@@ -173,7 +175,7 @@ class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
         self.refreshImg()
 
     def refreshImg(self):
-        if self.imgloc==None or self.imgloc == '':
+        if self.imgloc == None or self.imgloc == '':
             self.setText("拖入图片即可更换封面")
             return
         if not os.path.isfile(self.imgloc):

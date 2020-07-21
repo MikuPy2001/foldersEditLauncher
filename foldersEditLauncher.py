@@ -91,8 +91,8 @@ class 窗口事件处理(QtWidgets.QWidget):
         if item is None:
             self.nowitem = None
             self.ui.Path.setPlainText("请选择一个")
-            self.ui.ImagePath.imgloc = item.ImagePath
-            self.ui.WIP.setChecked(item.WIP)
+            self.ui.ImagePath.imgloc = ''
+            self.ui.WIP.setChecked(False)
             self.ui.ImagePath.refreshImg()
             self.ui.songlen.setText("0")
         else:
