@@ -225,7 +225,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>文件夹路径</string>
+    <string>文件夹路径(拖入文件夹修改)</string>
    </property>
   </widget>
   <widget class="QLabel" name="no_uss_label_8">
@@ -275,6 +275,9 @@
      <width>201</width>
      <height>131</height>
     </rect>
+   </property>
+   <property name="readOnly">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QLabel" name="no_uss_label_9">
