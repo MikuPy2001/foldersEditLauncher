@@ -65,7 +65,7 @@ class MyQListWidget2(MyQListWidget1):  # 双击编辑item
         )
 
 
-class MyQListWidget(MyQListWidget2):  # 接受 文件拖入
+class MyQListWidget(MyQListWidget2):  # 接受 文件夹拖入
 
     def __init__(self, Form):
         super().__init__(Form)
@@ -75,19 +75,9 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件拖入
 
     def dragEnterEvent(self, e):  # 进入
         super().dragEnterEvent(e)
-        m = e.mimeData()
-
-        if not (m.hasText() and m.text().startswith('file:///')):
-            # print("不受支持的类型")
-            return
-
-        path = m.text().replace('file:///', '')
-        paths = path.splitlines()
-        for path in paths:
-            if os.path.isdir(path):
+        if len(getDirs(e)) > 0:
                 self.isDragEnter = True
                 e.acceptProposedAction()
-                return
 
     def dragLeaveEvent(self, e):  # 离开
         super().dragLeaveEvent(e)
@@ -104,11 +94,7 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件拖入
         if not self.isDragEnter:
             return
         self.isDragEnter = False
-        path = e.mimeData().text().replace('file:///', '')  # 删除多余开头
-        paths = path.splitlines()
-        print("收到以下文件夹")
-        for path in paths:
-            if os.path.isdir(path):
+        for path in getDirs(e):
                 # 如果拖入的是歌曲,则返回上一层的
                 if os.path.isfile(os.path.join(path, "info.dat")) or os.path.isfile(os.path.join(path, "info.json")):
                     path = os.path.dirname(path)
@@ -121,33 +107,14 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件拖入
 
 
 class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
-    # imgType_list = ['jpg', 'bmp', 'png', 'jpeg', 'rgb', 'tif']
-
     def __init__(self, Form):
         super().__init__(Form)
+        self.isDragEnter = False
         self.imgloc = ""
 
     def dragEnterEvent(self, e):  # 进入
         super().dragEnterEvent(e)
-        m = e.mimeData()
-        # TODO 检查拖放类型
-        if not (m.hasText() and m.text().startswith('file:///')):
-            # print("不受支持的类型")
-            return
-
-        path = m.text().replace('file:///', '')
-        if len(path.splitlines()) > 1:
-            # print("不支持多文件")
-            return
-        if not os.path.isfile(path):
-            # print("不是文件")
-            return
-
-        imgType = imghdr.what(path)
-        if imgType is None:  # 受支持的格式
-            print(("格式不受支持:", imgType))
-            return
-
+        if not get1Img(e) is None:
         e.acceptProposedAction()
         self.isDragEnter = True
         self.setText("松开鼠标以设置封面")
@@ -168,8 +135,7 @@ class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
         if not self.isDragEnter:
             return
         self.isDragEnter = False
-        path = e.mimeData().text().replace('file:///', '')  # 删除多余开头
-        self.imgloc = path
+        self.imgloc = get1Img(e)
         self.refreshImg()
 
     def refreshImg(self):
@@ -185,3 +151,75 @@ class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
             return
         pix = QtGui.QPixmap(self.imgloc)
         self.setPixmap(pix)
+
+
+class MyQTextEdit(QtWidgets.QTextEdit):
+    def __init__(self, Form):
+        super().__init__(Form)
+        self.isDragEnter = False
+
+    def dragEnterEvent(self, e):  # 进入
+        super().dragEnterEvent(e)
+        m = e.mimeData()
+        
+
+        e.acceptProposedAction()
+        self.isDragEnter = True
+        self.setText("松开鼠标以设置封面")
+
+    def dragLeaveEvent(self, e):  # 离开
+        super().dragLeaveEvent(e)
+        if self.isDragEnter:
+            self.isDragEnter = False
+
+    def dragMoveEvent(self, e):  # 移动
+        super().dragMoveEvent(e)
+        if self.isDragEnter:
+            e.acceptProposedAction()
+
+    def dropEvent(self, e):  # 放下文件后的动作
+        super().dropEvent(e)
+        if not self.isDragEnter:
+            return
+        self.isDragEnter = False
+        path = e.mimeData().text().replace('file:///', '')  # 删除多余开头
+        self.imgloc = path
+        self.refreshImg()
+
+
+def getData(e):
+    m = e.mimeData()
+    if not m.hasText():
+        return []
+    sps = m.text().splitlines()
+    files = []
+    for line in sps:
+        if line.startswith('file:///'):
+            files.append(line[8:])
+    return files
+
+
+def getDirs(e):
+    dirs = []
+    data = getData(e)
+    for d in data:
+        if os.path.isdir(d):
+            dirs.append(d)
+    return dirs
+
+
+def getFile(e):
+    data = getData(e)
+    files = []
+    for d in data:
+        if os.path.isfile(d):
+            files.append(d)
+    if len(files) == 1:
+        return files[0]
+
+
+def get1Img(e):
+    f = getFile(e)
+    if not f is None:
+        if not imghdr.what(f) is None:  # 受支持的格式
+            return f
