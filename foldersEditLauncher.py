@@ -1,3 +1,4 @@
+import time
 import ctypes
 import os
 import sys
@@ -55,9 +56,10 @@ def setNodeData(doc, fatherNode, list, pack):
 class 窗口事件处理(QtWidgets.QWidget):
     def __init__(self, gamebasedir=None):
         super().__init__()
-        self.nowitem = None
-        self.initUI()
-        self.setGameLoc(gamebasedir)
+        self.initUI()  # 初始化界面
+        self.show()  # 显示界面
+        self.initLogic()  # 初始化逻辑
+        self.setGameLoc(gamebasedir)  # 初始化数据
 
     def initUI(self):
         self.ui = Ui_Form()
@@ -73,20 +75,21 @@ class 窗口事件处理(QtWidgets.QWidget):
             QtCore.Qt.WindowCloseButtonHint)
         # 禁止拉伸窗口大小
         self.setFixedSize(self.width(), self.height())
-        # 关联点击事件,单击即可开始编辑
-        self.ui.listWidget0.itemClicked.connect(self.listItemClickedEVE)
-        self.ui.listWidget1.itemClicked.connect(self.listItemClickedEVE)
-        self.ui.listWidget2.itemClicked.connect(self.listItemClickedEVE)
-        self.ui.listWidgetDel.itemClicked.connect(self.listItemClickedEVE)
+
+    def initLogic(self):
+        # 设置列表通用属性
+        self.list = [self.ui.listWidget0, self.ui.listWidget1,
+                     self.ui.listWidget2, self.ui.listWidgetDel]
+        self.nowitem = None
+        for list in self.list:
+            # 关联点击事件,单击即可开始编辑
+            list.itemClicked.connect(self.listItemClickedEVE)
+            # 查重
+            list.checkDuplicate = self.checkDuplicate
+        self.ui.Path.checkDuplicate = self.checkDuplicate
         self.nowitem = None
         self.ui.savefile.clicked.connect(self.savexml)
-        # 查重
-        self.ui.listWidget0.checkDuplicate = self.checkDuplicate
-        self.ui.listWidget1.checkDuplicate = self.checkDuplicate
-        self.ui.listWidget2.checkDuplicate = self.checkDuplicate
-        self.ui.listWidgetDel.checkDuplicate = self.checkDuplicate
-
-        self.show()
+        self.ui.delimg.clicked.connect(self.ui.ImagePath.setimg)
 
     def listItemClickedEVE(self, item):
         if not self.nowitem is None:
@@ -96,20 +99,22 @@ class 窗口事件处理(QtWidgets.QWidget):
         if item is None:
             self.nowitem = None
             self.ui.Path.setPlainText("请选择一个")
-            self.ui.ImagePath.imgloc = ''
+            self.ui.ImagePath.setimg('')
             self.ui.WIP.setChecked(False)
-            self.ui.ImagePath.refreshImg()
             self.ui.songlen.setText("0")
         else:
             self.nowitem = item
             self.ui.Path.setPlainText(item.Path)
-            self.ui.ImagePath.imgloc = item.ImagePath
+            self.ui.ImagePath.setimg(item.ImagePath)
             self.ui.WIP.setChecked(item.WIP)
-            self.ui.ImagePath.refreshImg()
             self.ui.songlen.setText(item.songlen)
 
     def checkDuplicate(self, path):
-        pass
+        for list in self.list:
+            for i in range(list.count()):
+                if list.item(i).Path == path:
+                    return True
+        return False
 
     def setGameLoc(self, loc):
         if loc is None or not os.path.isdir(loc):
@@ -122,19 +127,21 @@ class 窗口事件处理(QtWidgets.QWidget):
                 sys.exit(0)
                 return
             loc = os.path.dirname(loc[0])
+            gameDir.saveFile(loc)
         print(loc)
         loc = os.path.join(
             loc, "UserData", "SongCore", "folders.xml")
         self.xmlLoc = loc
         self.loadxml()
+        self.rawXml = self.toXml()
 
     def loadxml(self):
         # 从xml初始化列表
         if not path.isfile(self.xmlLoc):  # 没有自定义目录
             return
         with open(self.xmlLoc, 'r', encoding="utf-8") as f:
-            folders = minidom.parseString(
-                f.read()).documentElement.getElementsByTagName("folder")
+            doc = minidom.parseString(f.read())
+            folders = doc.documentElement.getElementsByTagName("folder")
         print(("一共有", len(folders), "个目录被读取"))
         self.ui.listWidget0.clear()
         self.ui.listWidget1.clear()
@@ -158,24 +165,50 @@ class 窗口事件处理(QtWidgets.QWidget):
             else:
                 self.ui.listWidgetDel.addItem(item)
 
-    def savexml(self):
-        # 列表保存到文件
+    def toXml(self):
+        # 列表保存到string
         doc = Document()
         folders = doc.createElement("folders")
         doc.appendChild(folders)
         setNodeData(doc, folders, self.ui.listWidget0, 0)
         setNodeData(doc, folders, self.ui.listWidget1, 1)
         setNodeData(doc, folders, self.ui.listWidget2, 2)
+        return doc.toprettyxml()
+
+    def savexml(self):
+        self.rawXml = self.toXml()
         with open(self.xmlLoc, 'w', encoding="utf-8") as f:
-            f.write(doc.toprettyxml())
+            f.write(self.rawXml)
 
     def closeEvent(self, e):
+        if not self.nowitem is None:
+            self.nowitem.Path = self.ui.Path.toPlainText()
+            self.nowitem.ImagePath = self.ui.ImagePath.imgloc
+            self.nowitem.WIP = self.ui.WIP.isChecked()
+        newxml = self.toXml()
+        if self.rawXml != newxml:
+            box = QtWidgets.QMessageBox()
+            box.setWindowTitle("保存提示")
+            box.setText("文件已被修改,是否保存")
+            box.addButton("保存", box.AcceptRole)
+            box.addButton("不保存", box.DestructiveRole)
+            box.addButton("取消", box.RejectRole)
+            box.setIcon(box.Question)
+            box.setWindowIcon(QtGui.QIcon('Icon.png'))
+            res = box.exec()
+            if res == box.AcceptRole:
+                self.savexml()
+            elif res == box.DestructiveRole:
+                e.ignore()
         print("窗口被关闭了")
 
 
 if __name__ == "__main__":
+    stat = time.time()
     gamed = gameDir.getBeatSaberDir()
     app = QtWidgets.QApplication(sys.argv)
     widget = 窗口事件处理(gamed)  # 窗口事件处理 使用UI生成的,不要改
+    end = time.time()
+    print("显示窗口花费了", end-stat)
     sys.exit(app.exec_())
     print("程序结束了")

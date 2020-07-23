@@ -1,22 +1,29 @@
 <?xml version="1.0" ?>
 <folders>
 	<folder>
-		<Name>WIP歌包</Name>
-		<Path>C:/Users/admin/Desktop/py/SongHash/WIP歌包</Path>
+		<Name>示例歌包</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/用于替换的歌包</Path>
 		<ImagePath></ImagePath>
 		<WIP>False</WIP>
-		<Pack>2</Pack>
+		<Pack>0</Pack>
 	</folder>
 	<folder>
-		<Name>示例歌包</Name>
-		<Path>C:/Users/admin/Desktop/py/SongHash/示例歌包</Path>
-		<ImagePath></ImagePath>
-		<WIP>False</WIP>
-		<Pack>2</Pack>
+		<Name>WIP歌包</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/WIP歌包</Path>
+		<ImagePath>C:/Users/admin/Desktop/py/SongHash/Examples.jpg</ImagePath>
+		<WIP>True</WIP>
+		<Pack>1</Pack>
 	</folder>
 	<folder>
 		<Name>有封面的歌包</Name>
 		<Path>C:/Users/admin/Desktop/py/SongHash/有封面的歌包</Path>
+		<ImagePath>C:/Users/admin/Desktop/py/SongHash/Examples.jpg</ImagePath>
+		<WIP>False</WIP>
+		<Pack>2</Pack>
+	</folder>
+	<folder>
+		<Name>自定义目录</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/Beat Saber/Beat Saber_Data/CustomLevels/自定义目录</Path>
 		<ImagePath></ImagePath>
 		<WIP>False</WIP>
 		<Pack>2</Pack>

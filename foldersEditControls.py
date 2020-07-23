@@ -13,7 +13,7 @@ def getItem(Name, Path, ImagePath, WIP):
     item.Path = Path
     item.ImagePath = ImagePath
     item.WIP = WIP
-    item.songlen = 0
+    item.songlen = "0"
     return item
 
 
@@ -75,9 +75,12 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件夹拖入
 
     def dragEnterEvent(self, e):  # 进入
         super().dragEnterEvent(e)
-        if len(getDirs(e)) > 0:
+        dirs = getDirs(e)
+        for dir in dirs:
+            if not self.checkDuplicate(dir):
                 self.isDragEnter = True
                 e.acceptProposedAction()
+                break
 
     def dragLeaveEvent(self, e):  # 离开
         super().dragLeaveEvent(e)
@@ -89,21 +92,21 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件夹拖入
         if self.isDragEnter:
             e.acceptProposedAction()
 
-    def dropEvent(self, e):  # 放下文件后的动作
+    def dropEvent(self, e):  # 放下
         super().dropEvent(e)
         if not self.isDragEnter:
             return
         self.isDragEnter = False
         for path in getDirs(e):
-                # 如果拖入的是歌曲,则返回上一层的
-                if os.path.isfile(os.path.join(path, "info.dat")) or os.path.isfile(os.path.join(path, "info.json")):
-                    path = os.path.dirname(path)
-                # 查重
-                if self.checkDuplicate(path):
-                    continue
+            # 如果拖入的是歌曲,则返回上一层的
+            if os.path.isfile(os.path.join(path, "info.dat")) or os.path.isfile(os.path.join(path, "info.json")):
+                path = os.path.dirname(path)
+            # 查重
+            if self.checkDuplicate(path):
+                continue
 
-                item = getItem(os.path.basename(path), path, "", False)
-                self.addItem(item)
+            item = getItem(os.path.basename(path), path, "", False)
+            self.addItem(item)
 
 
 class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
@@ -115,9 +118,9 @@ class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
     def dragEnterEvent(self, e):  # 进入
         super().dragEnterEvent(e)
         if not get1Img(e) is None:
-        e.acceptProposedAction()
-        self.isDragEnter = True
-        self.setText("松开鼠标以设置封面")
+            e.acceptProposedAction()
+            self.isDragEnter = True
+            self.setText("松开鼠标以设置封面")
 
     def dragLeaveEvent(self, e):  # 离开
         super().dragLeaveEvent(e)
@@ -130,12 +133,18 @@ class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
         if self.isDragEnter:
             e.acceptProposedAction()
 
-    def dropEvent(self, e):  # 放下文件后的动作
+    def dropEvent(self, e):  # 放下
         super().dropEvent(e)
         if not self.isDragEnter:
             return
         self.isDragEnter = False
-        self.imgloc = get1Img(e)
+        self.setimg(get1Img(e))
+
+    def setimg(self, imgloc=None):
+        if isinstance(imgloc, str):
+            self.imgloc = imgloc
+        else:
+            self.imgloc = None
         self.refreshImg()
 
     def refreshImg(self):
@@ -153,38 +162,41 @@ class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
         self.setPixmap(pix)
 
 
-class MyQTextEdit(QtWidgets.QTextEdit):
+class MyQTextEdit(QtWidgets.QTextEdit):  # 修改文件夹
     def __init__(self, Form):
         super().__init__(Form)
         self.isDragEnter = False
+        self.checkDuplicate = lambda path: False
+        self.oldTxt = ""
 
     def dragEnterEvent(self, e):  # 进入
         super().dragEnterEvent(e)
-        m = e.mimeData()
-        
-
-        e.acceptProposedAction()
-        self.isDragEnter = True
-        self.setText("松开鼠标以设置封面")
+        dirs = getDirs(e)
+        if len(dirs) == 1:
+            dir = dirs[0]
+            if not self.checkDuplicate(dir):
+                e.acceptProposedAction()
+                self.isDragEnter = True
+                self.oldTxt = self.toPlainText()
+                self.setText("松开鼠标以设置")
 
     def dragLeaveEvent(self, e):  # 离开
         super().dragLeaveEvent(e)
         if self.isDragEnter:
             self.isDragEnter = False
+            self.setText(self.oldTxt)
 
     def dragMoveEvent(self, e):  # 移动
         super().dragMoveEvent(e)
         if self.isDragEnter:
             e.acceptProposedAction()
 
-    def dropEvent(self, e):  # 放下文件后的动作
+    def dropEvent(self, e):  # 放下
         super().dropEvent(e)
         if not self.isDragEnter:
             return
         self.isDragEnter = False
-        path = e.mimeData().text().replace('file:///', '')  # 删除多余开头
-        self.imgloc = path
-        self.refreshImg()
+        self.setText(getDirs(e)[0])
 
 
 def getData(e):
@@ -196,6 +208,7 @@ def getData(e):
     for line in sps:
         if line.startswith('file:///'):
             files.append(line[8:])
+    # print("getData", files)
     return files
 
 
@@ -205,6 +218,7 @@ def getDirs(e):
     for d in data:
         if os.path.isdir(d):
             dirs.append(d)
+    # print("getDirs", dirs)
     return dirs
 
 
@@ -215,6 +229,7 @@ def getFile(e):
         if os.path.isfile(d):
             files.append(d)
     if len(files) == 1:
+        # print("getFile", files[0])
         return files[0]
 
 
@@ -222,4 +237,9 @@ def get1Img(e):
     f = getFile(e)
     if not f is None:
         if not imghdr.what(f) is None:  # 受支持的格式
+            # print("get1Img", f)
             return f
+
+
+if __name__ == "__main__":
+    print(type("imgloc"))
