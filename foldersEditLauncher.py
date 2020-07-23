@@ -80,6 +80,11 @@ class 窗口事件处理(QtWidgets.QWidget):
         self.ui.listWidgetDel.itemClicked.connect(self.listItemClickedEVE)
         self.nowitem = None
         self.ui.savefile.clicked.connect(self.savexml)
+        # 查重
+        self.ui.listWidget0.checkDuplicate = self.checkDuplicate
+        self.ui.listWidget1.checkDuplicate = self.checkDuplicate
+        self.ui.listWidget2.checkDuplicate = self.checkDuplicate
+        self.ui.listWidgetDel.checkDuplicate = self.checkDuplicate
 
         self.show()
 
@@ -102,6 +107,9 @@ class 窗口事件处理(QtWidgets.QWidget):
             self.ui.WIP.setChecked(item.WIP)
             self.ui.ImagePath.refreshImg()
             self.ui.songlen.setText(item.songlen)
+
+    def checkDuplicate(self, path):
+        pass
 
     def setGameLoc(self, loc):
         if loc is None or not os.path.isdir(loc):

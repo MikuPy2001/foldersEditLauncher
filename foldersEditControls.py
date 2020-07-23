@@ -70,6 +70,7 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件拖入
     def __init__(self, Form):
         super().__init__(Form)
         self.isDragEnter = False
+        self.checkDuplicate = lambda path: False
         self.itemDoubleClicked.connect(self.itemDoubleClickedEVE)
 
     def dragEnterEvent(self, e):  # 进入
@@ -111,15 +112,12 @@ class MyQListWidget(MyQListWidget2):  # 接受 文件拖入
                 # 如果拖入的是歌曲,则返回上一层的
                 if os.path.isfile(os.path.join(path, "info.dat")) or os.path.isfile(os.path.join(path, "info.json")):
                     path = os.path.dirname(path)
+                # 查重
+                if self.checkDuplicate(path):
+                    continue
 
                 item = getItem(os.path.basename(path), path, "", False)
                 self.addItem(item)
-
-    def setCheckDuplicate(self, callBack):
-        self.callBack = callBack
-
-    def CheckDuplicate(self):
-        return False
 
 
 class MyQLabel(QtWidgets.QLabel):  # 支持图片拖入并显示
