@@ -1,6 +1,7 @@
 import imghdr
 import json
 import os
+import threading
 import traceback
 import types
 
@@ -14,7 +15,24 @@ def getItem(Name, Path, ImagePath, WIP):
     item.ImagePath = ImagePath
     item.WIP = WIP
     item.songlen = "0"
+    threading.Thread(target=itemSongLen, args=(item,), daemon=True).start()
     return item
+
+
+def itemSongLen(item):
+    if not os.path.isdir(item.Path):
+        item.songlen = "目录无效"
+        return
+    dirs = os.listdir(item.Path)
+    songs = 0
+    for dir in dirs:
+        dir = os.path.join(item.Path, dir)
+        if os.path.isdir(dir):
+            dat = os.path.join(dir, "info.dat")
+            json = os.path.join(dir, "info.json")
+            if os.path.isfile(dat) or os.path.isfile(json):
+                songs += 1
+    item.songlen = str(songs)
 
 
 class MyQListWidget1(QtWidgets.QListWidget):  # 解决item拖放问题
