@@ -1,29 +1,43 @@
 <?xml version="1.0" ?>
 <folders>
 	<folder>
-		<Name>有封面的歌包</Name>
-		<Path>C:/Users/admin/Desktop/py/SongHash/有封面的歌包</Path>
-		<ImagePath>C:/Users/admin/Desktop/py/SongHash/Examples.jpg</ImagePath>
-		<WIP>False</WIP>
-		<Pack>0</Pack>
-	</folder>
-	<folder>
-		<Name>用于替换的歌包</Name>
-		<Path>C:/Users/admin/Desktop/py/SongHash/用于替换的歌包</Path>
+		<Name>6重复目录</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/演示用目录/6重复目录不会被添加</Path>
 		<ImagePath></ImagePath>
 		<WIP>False</WIP>
 		<Pack>0</Pack>
 	</folder>
 	<folder>
-		<Name>有很多歌曲的歌包</Name>
-		<Path>C:/Users/admin/Desktop/py/SongHash/有很多歌曲的歌包</Path>
+		<Name>1被替换路径的歌包</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/演示用目录/用于替换的歌包</Path>
 		<ImagePath></ImagePath>
 		<WIP>False</WIP>
 		<Pack>2</Pack>
 	</folder>
 	<folder>
-		<Name>WIP歌包</Name>
-		<Path>C:/Users/admin/Desktop/py/SongHash/WIP歌包</Path>
+		<Name>2示例歌包</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/演示用目录/2示例歌包</Path>
+		<ImagePath></ImagePath>
+		<WIP>False</WIP>
+		<Pack>2</Pack>
+	</folder>
+	<folder>
+		<Name>3WIP歌包</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/演示用目录/3WIP歌包</Path>
+		<ImagePath></ImagePath>
+		<WIP>False</WIP>
+		<Pack>2</Pack>
+	</folder>
+	<folder>
+		<Name>4有封面的歌包</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/演示用目录/4有封面的歌包</Path>
+		<ImagePath>C:/Users/admin/Desktop/py/SongHash/演示用目录/Examples.jpg</ImagePath>
+		<WIP>False</WIP>
+		<Pack>2</Pack>
+	</folder>
+	<folder>
+		<Name>5有很多歌曲的歌包</Name>
+		<Path>C:/Users/admin/Desktop/py/SongHash/演示用目录/5有很多歌曲的歌包</Path>
 		<ImagePath></ImagePath>
 		<WIP>False</WIP>
 		<Pack>2</Pack>
