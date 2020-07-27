@@ -1,1 +1,0 @@
-copy "v2-all - ¸±±¾.json" "v2-all.json"

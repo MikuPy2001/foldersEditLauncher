@@ -1,0 +1,51 @@
+# UTF-8
+#
+# 有关固定文件信息'ffi'的更多详细信息，请参见：
+# http://msdn.microsoft.com/en-us/library/ms646997.aspx
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    # filevers和prodvers应该始终是包含四个项的元组: (1, 2, 3, 4)
+    # 将不需要的项目设置为零0.
+    filevers=(1,0,0,0),
+    prodvers=(1,0,0,0),
+    # 包含指定有效位的位掩码 'flags'r
+    mask=0x3f,
+    # 包含一个位掩码，用于指定文件的布尔属性。
+    flags=0x0,
+    # 设计该文件的操作系统。
+    # 0x4 - NT and there is no need to change it.
+    OS=0x40004,
+    # 文件的常规类型。
+    # 0x1 - 该文件是一个应用程序.
+    fileType=0x1,
+    # 文件的功能。
+    # 0x0 - 未为此文件类型定义功能
+    subtype=0x0,
+    # 创建日期和时间戳。
+    date=(0, 0)
+    ),
+  kids=[
+    StringFileInfo(
+      [
+      StringTable(
+        u'040904B0',
+		# 公司名
+        [StringStruct(u'CompanyName', u'塔塔喵有限公司'),
+		# 文件描述
+        StringStruct(u'FileDescription', u'Beat Saber®的SongCore插件的配置的可视化管理'),
+		# 文件版本
+        StringStruct(u'FileVersion', u'1.0.0.0 塔塔喵出品'),
+		# 内部名称
+        StringStruct(u'InternalName', u'foldersEditLauncher'),
+		# 法律版权
+        StringStruct(u'LegalCopyright', u'TATamis 保留所有权限'),
+		# 原始文件名
+        StringStruct(u'OriginalFilename', u'foldersEditLauncher.exe'),
+		# 产品名称
+        StringStruct(u'ProductName', u'foldersEditLauncher'),
+		# 产品版本
+        StringStruct(u'ProductVersion', u'1.0.0.0')])
+      ]), 
+    VarFileInfo([VarStruct(u'Translation', [1033, 1200])])
+  ]
+)
